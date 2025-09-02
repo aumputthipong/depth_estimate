@@ -1,4 +1,4 @@
-<img width="470" height="220" alt="image" src="https://github.com/user-attachments/assets/f5080f59-fa5a-43c8-b4aa-cb3318372156" />#  Depth Estimation with Autoencoder
+#  Depth Estimation with Autoencoder
 
 This project was developed as part of the **Deep Learning course**. The goal is to estimate **depth maps from RGB images** using an **Autoencoder-based model**.
 
