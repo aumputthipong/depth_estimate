@@ -1,5 +1,10 @@
 #  Depth Estimation with Autoencoder
 
+## Dataset
+
+[NYU Depth V2](https://cs.nyu.edu/~fergus/datasets/nyu_depth_v2.html) (Silberman et al., ECCV 2012)
+DowloadFrom [Kaggle: Image Depth Estimation](https://www.kaggle.com/datasets/sohaibanwaar1203/image-depth-estimation)
+
 ##  Project Overview
 
 - Implements a Convolutional Autoencoder for monocular depth estimation.
