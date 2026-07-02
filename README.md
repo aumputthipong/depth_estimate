@@ -1,26 +1,86 @@
-#  Depth Estimation with Autoencoder
+# Image Depth Estimation
+
+Monocular **depth estimation** from indoor room photos using a **U-Net** architecture with a **ResNet50** encoder. Given a single RGB image, the model predicts a per-pixel depth map (how far each point in the scene is from the camera).
+
+> A deep-learning side project. My primary focus is software development — this repo shows hands-on experience building and training an end-to-end computer-vision model.
+
+---
+
+## Results
+
+Left to right: **input image · ground-truth depth · predicted depth**.
+
+<!-- 📷 PREDICTION IMAGE 1 (Screenshot 181247 — samples 00013 / 00020). Add here: -->
+ <img src="https://github.com/user-attachments/assets/8aa8b303-5d35-463a-ab3a-16c81a75439d"   alt="prediction results 1" width="600" />
+
+
+<!-- 📷 PREDICTION IMAGE 2 (Screenshot 181240 — samples 00000 / 00008). Add here: -->
+ <img src="https://github.com/user-attachments/assets/d7730c74-32a9-44c7-aa70-ab4ad386660e"  alt="prediction results 1" width="600" />
+
+- **Best validation MSE ≈ 0.0007** (depth normalized to the `0–1` range).
+- Best checkpoint reached around **epoch 7**, with only a negligible increase in error afterward — **no significant overfitting**.
+- Training and validation loss both dropped quickly in the first few epochs, then flattened out.
+
+<!-- 📷 TRAINING CURVE — loss vs. epoch. Add here: -->
+<img src="https://github.com/user-attachments/assets/860eb60e-f134-4304-b4d9-1615afe2f337"  alt="training curve" width="300" />
+
+---
+
+## Overview
+
+- **Task:** Predict a depth map from a single RGB image (image-to-image regression).
+- **Model:** U-Net + ResNet50 encoder (pretrained on ImageNet).
+- **Framework:** PyTorch + [`segmentation-models-pytorch`](https://github.com/qubvel-org/segmentation_models.pytorch).
+
+---
 
 ## Dataset
 
-[NYU Depth V2](https://cs.nyu.edu/~fergus/datasets/nyu_depth_v2.html) (Silberman et al., ECCV 2012)
-DowloadFrom [Kaggle: Image Depth Estimation](https://www.kaggle.com/datasets/sohaibanwaar1203/image-depth-estimation)
+[NYU Depth V2](https://cs.nyu.edu/~fergus/datasets/nyu_depth_v2.html) (Silberman et al., ECCV 2012) — downloaded from [Kaggle: Image Depth Estimation](https://www.kaggle.com/datasets/sohaibanwaar1203/image-depth-estimation).
 
-##  Project Overview
+Each sample is a photo of an indoor room paired with a ground-truth depth map, where every pixel encodes a distance value.
 
-- Implements a Convolutional Autoencoder for monocular depth estimation.
-- Trained on RGB images and corresponding depth maps.
-- Focuses on understanding unsupervised/supervised feature learning using Autoencoders.
+**What makes it challenging:** photos are taken from many rooms, angles, and lighting conditions, so the same object or structure can look very different across images — the model has to learn depth cues that generalize across a lot of visual variety.
 
-##  Objectives
+---
 
-- Learn how Autoencoders can be used for image-to-image tasks.
-- Apply deep learning techniques to estimate scene depth from a single image.
-- Evaluate the quality of predicted depth maps.
+## Approach
 
-## Data
-<img width="1103" height="620" alt="depth-est (0)" src="https://github.com/user-attachments/assets/f6d9484d-98f7-4db3-8fc0-11dce81f063f" />
+### Data pipeline
+- **Split:** 80% train / 20% validation via `random_split()`.
+- **Loading:** `DataLoader` with `batch_size = 8`.
+- **Preprocessing:** resize to `256 × 320`, convert to tensor, normalize the RGB input.
 
-## Prediction Result
-<img width="1377" height="755" alt="depth-est (1)" src="https://github.com/user-attachments/assets/656bb89b-f287-4da3-8e33-712f82cc2152" />
-<img width="1341" height="775" alt="depth-est (2)" src="https://github.com/user-attachments/assets/a20f3eef-2d38-4341-8d28-197a9a2601bb" />
-<img width="1111" height="290" alt="depth-est (6)" src="https://github.com/user-attachments/assets/5b93a92d-8d65-47ed-8112-dd06ddda11c8" />
+### Model architecture
+
+| Config | Value |
+| --- | --- |
+| Architecture | U-Net |
+| Encoder | ResNet50 |
+| Pretrained weights | ImageNet |
+| Input channels | 3 (RGB) |
+| Output classes | 1 (depth) |
+| Activation | None (linear — regression output) |
+
+- **Transfer learning:** the ResNet50 encoder starts from ImageNet weights, so it already knows strong low-level image features.
+- **Skip connections:** U-Net links encoder and decoder at matching resolutions, preserving fine spatial detail in the predicted depth map better than a plain CNN.
+
+### Training setup
+
+| Config | Value |
+| --- | --- |
+| Loss | Mean Squared Error (MSE) |
+| Optimizer | Adam |
+| Learning rate | 1e-4 |
+| Epochs | 8 |
+
+---
+
+## Repository
+
+| File | Description |
+| --- | --- |
+| `depth_train.ipynb` | Data loading, model definition, and training loop (saves a checkpoint per epoch + the best model). |
+| `depth_inference.ipynb` | Loads a trained checkpoint and visualizes predictions against ground truth. |
+
+**Tech stack:** Python · PyTorch · segmentation-models-pytorch · torchvision · Pillow · Matplotlib
