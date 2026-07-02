@@ -1,5 +1,9 @@
 #  Depth Estimation with Autoencoder
 
+## Dataset
+
+NYU Depth Dataset V2 (preprocessed)
+Source: https://www.kaggle.com/datasets/artemmmtry/nyu-depth-v2
 This project was developed as part of the **Deep Learning course**. The goal is to estimate **depth maps from RGB images** using an **Autoencoder-based model**.
 
 ##  Project Overview
