@@ -84,3 +84,18 @@ Each sample is a photo of an indoor room paired with a ground-truth depth map, w
 | `depth_inference.ipynb` | Loads a trained checkpoint and visualizes predictions against ground truth. |
 
 **Tech stack:** Python · PyTorch · segmentation-models-pytorch · torchvision · Pillow · Matplotlib
+
+---
+
+## How to Run
+
+1. **Download the trained weights** — [`best_model.pth`](https://github.com/aumputthipong/depth_estimate/releases/download/v1.0/best_model.pth) (~124 MB, published under **Releases**) and place it in the project root.
+
+2. **Install dependencies.** ⚠️ **Pillow must be an older version.** Pillow ≥ 10 can no longer resize the 16-bit depth PNGs and raises `ValueError: image has wrong mode`, so pin it to `9.5.0`:
+
+   ```bash
+   pip install torch torchvision segmentation-models-pytorch matplotlib pandas
+   pip install "Pillow==9.5.0"
+   ```
+
+3. **Run** — open `depth_inference.ipynb` and run all cells (restart the kernel first if a newer Pillow was already imported).

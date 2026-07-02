@@ -1,0 +1,17 @@
+# Model checkpoints (distributed via GitHub Releases, not committed)
+*.pth
+*.zip
+
+# Dataset (downloaded separately from Kaggle)
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
